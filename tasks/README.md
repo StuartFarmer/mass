@@ -35,7 +35,15 @@ does not move task 221 into the test split.
 | 207 | Pharmacy | Inverse-folding evaluation | [Prompt](bare/query207.txt) | [Task + workflow](initial/query207_ourTeam.txt) |
 | 305 | Robotics | Tool-use planning for manipulation | [Prompt](bare/query305.txt) | [Task + workflow](initial/query305_ourTeam.txt) |
 
-## Use the tasks
+## Additional local task
+
+Task **61**, daily Bitcoin allocation, adapts the `rsikit` Bitcoin environment:
+[prompt](bare/query61.txt), [initial workflow](initial/query61_ourTeam.txt), and
+[run instructions](../docs/bitcoin.md). Use `configs/bitcoin.json` to run it
+separately from the paper tasks. It uses the exact rsikit training CSV and
+reserves the later historical validation panel for evaluation after search.
+
+## Use the paper tasks
 
 [splits.json](splits.json) lists the nine designated training tasks, three test
 tasks, and the eight tasks used for SFT. The corresponding fields in both
