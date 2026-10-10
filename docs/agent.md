@@ -9,7 +9,7 @@ recursive weight training or convert these traces into the paper's training form
 ## Install
 
 Use Python 3.10+ and run from this repository root. rsikit is a source dependency:
-the compatible implementation is commit `5335e8c` on its `codex/agent-runtime`
+the compatible implementation is commit `5335e8c` on its `feat/agent-runtime`
 branch. An older package with the same `0.0.1` version is insufficient.
 
 ```sh

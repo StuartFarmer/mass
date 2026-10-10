@@ -20,7 +20,7 @@ training, or claims of measured live-model performance gains.
 - [x] Existing signatures and default scoring/retry behavior remain compatible.
 - [x] Real-worker crash checks and independent review fixes for legacy caches,
       cleanup errors, and feedback-projector deadlines.
-- [x] rsikit commit 5335e8c on codex/agent-runtime; supplied checkout on that branch.
+- [x] rsikit commit 5335e8c on feat/agent-runtime; supplied checkout on that branch.
       No push or merge. 65 focused tests pass; six full-suite failures match baseline.
       See rsikit docs/AGENT_RUNTIME_VALIDATION.md.
 

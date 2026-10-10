@@ -1,7 +1,7 @@
 # Agent validation — 2026-10-10
 
 The new shared rsikit runtime was implemented first and committed as `5335e8c` on
-`codex/agent-runtime`. MASS then adopted its stop reasons, public feedback projection,
+`feat/agent-runtime`. MASS then adopted its stop reasons, public feedback projection,
 durable evaluation context, step bounds, evaluation identity, and no-retry option.
 
 ## MASS checks
