@@ -4,11 +4,44 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+    inputs:
+      rsikit_ref:
+        description: Published 40-character rsikit commit with the agent runtime (enables integration tests)
+        required: false
+        type: string
 
 permissions:
   contents: read
 
 jobs:
+  agent:
+    name: Agent integration with explicit rsikit source
+    if: github.event_name == 'workflow_dispatch' && inputs.rsikit_ref != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      RSIKIT_REF: ${{ inputs.rsikit_ref }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - name: Require an immutable runtime revision
+        run: python -c 'import os, re; assert re.fullmatch("[0-9a-f]{40}", os.environ["RSIKIT_REF"]), "Use a full commit SHA"'
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: StuartFarmer/rsikit
+          ref: ${{ inputs.rsikit_ref }}
+          path: .runtime/rsikit
+          persist-credentials: false
+      - name: Install agent dependencies and selected runtime
+        run: python -m pip install -r requirements-agent.txt ./.runtime/rsikit
+      - name: Require passing agent contracts and real-worker tests
+        run: python tools/test_agent.py
+
   offline:
     name: Offline checks (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest

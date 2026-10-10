@@ -46,6 +46,10 @@ The [experiment support](docs/experiment_coverage.md) and
 [implementation notes](docs/reproduction.md) describe the available experiments
 and differences from the reported runs.
 
+For interactive tasks beyond the paper fixtures, the [general agent](docs/agent.md)
+runs a team and searches its workflow on trusted Gymnasium adapters, using rsikit
+for workers, evaluation, and durable traces. This path keeps model weights fixed.
+
 <a name="benchmark-results"></a>
 
 ## 📊 Benchmark results

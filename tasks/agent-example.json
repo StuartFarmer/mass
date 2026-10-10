@@ -1,0 +1,5 @@
+{
+  "environment": "examples.agent_tasks:ToolTask",
+  "instructions": "Set the state to 2 using operation 0 and value 2; then finish using operation 1 and value 0.",
+  "task_version": "1"
+}

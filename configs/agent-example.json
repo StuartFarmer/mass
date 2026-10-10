@@ -1,0 +1,14 @@
+{
+  "model": {
+    "backend": "local-vllm",
+    "model": "your-local-model",
+    "base_url": "http://127.0.0.1:1234/v1"
+  },
+  "limits": {
+    "max_steps": 4,
+    "max_model_calls": 12,
+    "max_context_bytes": 32768,
+    "episode_timeout": 300.0
+  },
+  "search": {"revisions": 2}
+}
