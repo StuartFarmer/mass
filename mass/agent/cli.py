@@ -12,7 +12,6 @@ from rsikit.evaluation import InfrastructureError, PolicyError, episode_scores
 from mass.io import read_json, write_json
 
 from .backend import AgentBackend
-from .policy import public_feedback
 from .runtime import load_environment
 from .schema import AGENT_VERSION, AgentConfig, TaskConfig, policy_definition
 from .search import WorkflowSearch, eligible
@@ -95,7 +94,6 @@ async def execute(mode, task, config, output, *, seed=0):
                             executor=executor,
                             seeds=seeds,
                             max_steps=config.limits.max_steps,
-                            feedback=public_feedback,
                             evaluation_key=f"mass-public-v1:{task.fingerprint}",
                             retry_failed=False,
                         )

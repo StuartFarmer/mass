@@ -17,7 +17,7 @@ from pydantic import ValidationError
 from rsikit import Episode, Executor, Run, search
 from rsikit.evaluation import InfrastructureError, PolicyBudgetExceeded, PolicyError
 
-from mass.agent.policy import TeamPolicy, public_feedback, space_json
+from mass.agent.policy import TeamPolicy, space_json
 from mass.agent.schema import (
     AgentConfig,
     AgentLimits,
@@ -390,7 +390,6 @@ class WorkerIntegrationTests(unittest.IsolatedAsyncioTestCase):
                     [definition],
                     environment=ChoiceTask(),
                     executor=executor,
-                    feedback=public_feedback,
                     evaluation_key="timeout",
                     max_steps=1,
                     retry_failed=False,
@@ -436,7 +435,6 @@ class WorkerIntegrationTests(unittest.IsolatedAsyncioTestCase):
                         [definition],
                         environment=env,
                         executor=executor,
-                        feedback=public_feedback,
                         evaluation_key="fixture",
                         max_steps=3,
                         retry_failed=False,

@@ -10,7 +10,7 @@ recursive weight training or convert these traces into the paper's training form
 
 Use Python 3.10+ and run from this repository root. rsikit is a source dependency:
 the compatible implementation is commit `5335e8c` on its `feat/agent-runtime`
-branch. An older package with the same `0.0.1` version is insufficient.
+branch, or the current native MASS branch. An older package with the same `0.0.1` version is insufficient.
 
 ```sh
 python3 -m venv .venv-agent
@@ -126,10 +126,10 @@ rsikit supplies the shared contracts:
   excludes its step/call exhaustion from selection; natural completion or an
   environment limit on the last allowed step remains eligible. Generic rsikit
   scoring remains independent of an agent's selection policy.
-- `Run.evaluate(max_steps=..., feedback=..., evaluation_key=..., retry_failed=False)`
+- `Run.evaluate(max_steps=..., evaluation_key=..., retry_failed=False)`
   binds the evaluation contract and refuses automatic retries of uncertain or
-  failed attempts. Feedback projection happens before `Policy.observe`; MASS
-  additionally filters direct `observe` calls.
+  failed attempts. MASS filters model-visible feedback inside `Policy.observe`;
+  rsikit retains the original transition evidence.
 - `Policy.context` carries a per-attempt `EvaluationContext` before reset. Its
   durable append-only event sink does not affect policy identity or model context.
   Workers need no global trace-directory environment variable.

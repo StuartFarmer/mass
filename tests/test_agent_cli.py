@@ -152,7 +152,7 @@ class AgentCliTests(unittest.IsolatedAsyncioTestCase):
                 self.assertTrue((path / "best_workflow.json").exists())
                 saved = json.loads((path / "summary.json").read_text())
                 self.assertEqual(saved["status"], "completed")
-                attempts = list((path / "attempts").rglob("episode.pkl"))
+                attempts = list((path / "attempts").rglob("events.jsonl"))
                 self.assertEqual(len(attempts), 1 if mode == "solve" else 6)
                 if mode == "search":
                     self.assertEqual(set(result["heldout"]), {"100", "101"})
