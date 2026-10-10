@@ -48,3 +48,13 @@ No live model calls, hosted CI, GPU training, performance improvement, hostile-c
 isolation, or exactly-once external actions were tested. The new manual CI job needs
 a published rsikit commit before it can run. Workflow search keeps weights fixed;
 the separate training integration remains future work.
+
+## macOS worker repair
+
+The reported worker abort was traced to system proxy discovery after fork, before
+any `model_started` event. An explicit HTTPX client with `trust_env=False` avoids
+that initialization. A regression rejects proxy discovery during actual SDK client
+construction, and another completes an actual SDK request inside an actual rsikit
+worker against a local scripted HTTP server. The regression failed before the fix.
+Full test discovery on the clean feature branch now passes 36 tests, no skips.
+No live provider, user credentials, or paid model calls were used.

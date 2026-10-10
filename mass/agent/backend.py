@@ -3,7 +3,7 @@
 import asyncio
 import os
 
-from openai import AsyncOpenAI, BadRequestError, OpenAIError
+from openai import AsyncOpenAI, BadRequestError, DefaultAsyncHttpxClient, OpenAIError
 from rsikit.evaluation import InfrastructureError, PolicyError
 
 from harness_improvement.llm_backend import _extract_json_object, _responses_text
@@ -24,6 +24,10 @@ class AgentBackend:
             base_url=config.base_url,
             timeout=config.timeout_seconds,
             max_retries=0,
+            # macOS system proxy discovery can abort a forked worker before any request.
+            http_client=DefaultAsyncHttpxClient(
+                trust_env=False, timeout=config.timeout_seconds
+            ),
         )
         self.last_metrics = None
 

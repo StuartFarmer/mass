@@ -59,6 +59,21 @@ For OpenAI Responses, use `backend: "openai-responses"`, an explicit model ID, a
 never put their values in configuration, task kwargs, or instructions. Configuration
 rejects unknown fields and URLs with embedded credentials, queries, or fragments.
 
+## Worker failure on macOS
+
+A worker exit before `model_started` can come from macOS system proxy discovery
+inside an HTTP client created after Huey forks. The client now explicitly disables
+implicit proxy and certificate environment discovery (`trust_env=False`). Explicit
+`base_url` and credentials configured by `api_key_env` still work. Deployments that
+require environment-configured proxies or CA bundles need explicit transport setup.
+
+For the native agent inside rsikit, use its `--optimizer mass` integration and
+`examples/mass_bitcoin.yaml`. Its model client runs in the parent process and all
+worker role calls share the experiment's budget. The standalone local-vllm config
+still needs the configured server running; setting `OPENROUTER_API_KEY` alone does
+not switch that config to OpenRouter. Preserve failed run directories and choose
+a new output directory for another attempt.
+
 ## Add a task
 
 A task JSON file specifies `environment: "your_package.tasks:YourFactory"`, an

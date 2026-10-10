@@ -22,6 +22,71 @@ from tests.test_agent import MODEL, TASK, ScriptedModel, workflow
 
 
 class AgentCliTests(unittest.IsolatedAsyncioTestCase):
+    async def test_real_sdk_request_completes_inside_worker(self):
+        async def reply(reader, writer):
+            headers = (await reader.readuntil(b"\r\n\r\n")).decode()
+            length = next(
+                int(line.split(":", 1)[1])
+                for line in headers.splitlines()
+                if line.lower().startswith("content-length:")
+            )
+            await reader.readexactly(length)
+            body = json.dumps(
+                {
+                    "id": "offline",
+                    "object": "chat.completion",
+                    "created": 0,
+                    "model": "offline",
+                    "choices": [
+                        {
+                            "index": 0,
+                            "finish_reason": "stop",
+                            "message": {
+                                "role": "assistant",
+                                "content": '{"action": 1}',
+                            },
+                        }
+                    ],
+                }
+            ).encode()
+            writer.write(
+                b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nConnection: close\r\nContent-Length: "
+                + str(len(body)).encode()
+                + b"\r\n\r\n"
+                + body
+            )
+            await writer.drain()
+            writer.close()
+            await writer.wait_closed()
+
+        async with await asyncio.start_server(reply, "127.0.0.1", 0) as server:
+            port = server.sockets[0].getsockname()[1]
+            config = AgentConfig(
+                model=ModelConfig(
+                    **{**MODEL, "base_url": f"http://127.0.0.1:{port}/v1"}
+                ),
+                workflow=workflow(),
+            )
+            with (
+                tempfile.TemporaryDirectory() as directory,
+                patch(
+                    "httpx._utils.getproxies",
+                    side_effect=RuntimeError("unsafe after fork"),
+                ),
+            ):
+                result = await execute(
+                    "solve", TaskConfig(**TASK), config, Path(directory) / "run"
+                )
+                self.assertEqual(result["status"], "completed")
+                self.assertEqual(result["episodes"]["0"]["score"], 1.0)
+
+    async def test_worker_client_does_not_probe_macos_system_proxies(self):
+        with patch(
+            "httpx._utils.getproxies", side_effect=RuntimeError("unsafe after fork")
+        ):
+            backend = AgentBackend(ModelConfig(**MODEL))
+            await backend.close()
+
     async def test_model_call_has_total_deadline(self):
         async def slow(**kwargs):
             await asyncio.sleep(0.03)
